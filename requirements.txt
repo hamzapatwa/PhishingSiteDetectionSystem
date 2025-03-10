@@ -1,0 +1,14 @@
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+plotly
+requests
+streamlit
+graphviz
+watchdog
+graphviz
+watchdog
+xgboost
+whois

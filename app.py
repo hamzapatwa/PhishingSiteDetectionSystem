@@ -19,6 +19,8 @@ from requests.exceptions import SSLError, Timeout, RequestException
 import whoisdomain
 from datetime import datetime
 import math
+import subprocess
+import whois
 
 ###############################################################################
 #                           1. HELPER FUNCTIONS
@@ -181,17 +183,22 @@ def uppercase_ratio(url):
     return sum(1 for c in url if c.isupper()) / len(url)
 
 def get_domain_age(domain):
-    # Updated WHOIS lookup using the whois library; handles multiple date types.
     try:
+        import whois  # Ensure you're importing the correct whois library
         w = whois.whois(domain)
         creation_date = w.creation_date
+        # Sometimes creation_date is a list, so take the first element
         if isinstance(creation_date, list):
             creation_date = creation_date[0]
-        if not creation_date:
+        if creation_date is None:
+            print("No creation date found in WHOIS data")
             return -1
-        return (datetime.now() - creation_date).days
-    except Exception:
-        return -1  # indicates WHOIS lookup failure or no domain info
+        age_days = (datetime.now() - creation_date).days
+        print(f"Domain age: {age_days} days (created on {creation_date})")
+        return age_days
+    except Exception as e:
+        print(f"Error: {e}")
+        return -1
 
 def get_http_response(url):
     try:
@@ -511,11 +518,6 @@ with tab_modeling:
                 st.write(f"**Precision (Test):** {res['prec_test']:.3f}")
                 st.plotly_chart(res["conf_matrix_fig"], use_container_width=True)
 
-        if "Decision Tree" in model_results:
-            tree_model = model_results["Decision Tree"]["model_object"]
-            st.write("### Decision Tree Structure")
-            tree_graph = get_tree_graph(tree_model, feature_names=X.columns)
-            st.graphviz_chart(tree_graph.source)
     else:
         st.info("No models loaded or trained yet. Use one of the above buttons.")
 

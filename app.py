@@ -95,7 +95,7 @@ def train_all_models(X_train, y_train, X_test, y_test):
         }
 
     # 1) Decision Tree
-    tree = DecisionTreeClassifier(max_depth=5, random_state=42)
+    tree = DecisionTreeClassifier(max_depth=20, random_state=42)
     tree.fit(X_train, y_train)
     model_results["Decision Tree"] = store_model(
         "Decision Tree",
@@ -105,7 +105,7 @@ def train_all_models(X_train, y_train, X_test, y_test):
     )
 
     # 2) Random Forest
-    forest = RandomForestClassifier(max_depth=5, random_state=42)
+    forest = RandomForestClassifier(max_depth=40, random_state=42)
     forest.fit(X_train, y_train)
     model_results["Random Forest"] = store_model(
         "Random Forest",
@@ -115,7 +115,7 @@ def train_all_models(X_train, y_train, X_test, y_test):
     )
 
     # 3) MLP
-    mlp = MLPClassifier(alpha=0.001, hidden_layer_sizes=(100, 100, 100), random_state=42)
+    mlp = MLPClassifier(alpha=0.001, hidden_layer_sizes=(200, 200, 200), random_state=42)
     mlp.fit(X_train, y_train)
     model_results["Multilayer Perceptrons"] = store_model(
         "Multilayer Perceptrons",
@@ -125,7 +125,7 @@ def train_all_models(X_train, y_train, X_test, y_test):
     )
 
     # 4) XGBoost
-    xgb = XGBClassifier(learning_rate=0.4, max_depth=7, random_state=42)
+    xgb = XGBClassifier(learning_rate=0.4, max_depth=42, random_state=42)
     xgb.fit(X_train, y_train)
     model_results["XGBoost"] = store_model(
         "XGBoost",

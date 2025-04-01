@@ -11,4 +11,5 @@ watchdog
 graphviz
 watchdog
 xgboost
-whois
+python-whois
+whoisdomain

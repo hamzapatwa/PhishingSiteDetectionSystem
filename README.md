@@ -1,7 +1,7 @@
-# 🛡️ Phishing URL Detector Pro
+# 🛡️ Phishing URL Detector
 
 ## Overview
-**Phishing URL Detector Pro** is a multi-page Streamlit dashboard that leverages machine learning to detect phishing websites based on structural, lexical, WHOIS, and HTML/JS features. This tool empowers users to explore how phishing detection works—from data analysis and model training to real-time predictions.
+**Phishing URL Detector** is a multi-page Streamlit dashboard that leverages machine learning to detect phishing websites based on structural, lexical, WHOIS, and HTML/JS features. This tool empowers users to explore how phishing detection works—from data analysis and model training to real-time predictions.
 
 > **Why it matters:** Phishing attacks are one of the most prevalent cyber threats. Automating URL classification using ML helps reduce risk at scale and enhances proactive defense mechanisms.
 

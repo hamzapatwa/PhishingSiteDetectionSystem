@@ -5,14 +5,14 @@ from utils import load_data  # Import helper from utils.py
 
 # --- Page Configuration ---
 st.set_page_config(
-    page_title="Phishing Detector Pro",
+    page_title="Phishing Detector",
     page_icon="🛡️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 # --- Page Content ---
-st.title("🛡️ Phishing URL Detector Pro")
+st.title("🛡️ Phishing URL Detector")
 st.markdown("---")
 
 st.subheader("🏠 Welcome!")

@@ -24,34 +24,57 @@ else:
             "ML Model": name,
             "Test Accuracy": v['acc_test'],
             "Test Precision": v['prec_test'],
+            # --- ADD RECALL TO SUMMARY DATA ---
+            "Test Recall": v['recall_test'],
+            # --- END ADD RECALL ---
             "Train Accuracy": v['acc_train'],
-            "Train Precision": v['prec_train']
+            "Train Precision": v['prec_train'],
+            # --- ADD RECALL TO SUMMARY DATA ---
+            "Train Recall": v['recall_train']
+            # --- END ADD RECALL ---
         })
 
     summary_df = pd.DataFrame(summary_data)
-    # Sort by Test Accuracy then Test Precision (descending)
+
+    # Define columns order for display
+    display_cols = ["ML Model", "Test Accuracy", "Test Precision", "Test Recall",
+                    "Train Accuracy", "Train Precision", "Train Recall"]
+    summary_df = summary_df[display_cols] # Reorder columns
+
+    # Sort by Test Accuracy then Test Precision (descending) - keeping this sort order for now
     summary_df = summary_df.sort_values(by=["Test Accuracy", "Test Precision"], ascending=False).reset_index(drop=True)
 
     # Display styled dataframe
+    # --- ADD RECALL FORMATTING ---
     st.dataframe(summary_df.style.format({
         "Train Accuracy": "{:.3f}", "Test Accuracy": "{:.3f}",
-        "Train Precision": "{:.3f}", "Test Precision": "{:.3f}"
-    }).highlight_max(subset=['Test Accuracy', 'Test Precision'], color='lightgreen', axis=0),
+        "Train Precision": "{:.3f}", "Test Precision": "{:.3f}",
+        "Train Recall": "{:.3f}", "Test Recall": "{:.3f}" # <-- Added recall format
+    }).highlight_max(subset=['Test Accuracy', 'Test Precision', 'Test Recall'], color='lightgreen', axis=0), # Highlight max recall too
                  use_container_width=True)
+    # --- END ADD RECALL FORMATTING ---
 
     # --- Identify and Highlight Best Model ---
     if not summary_df.empty:
         best_model_name = summary_df.iloc[0]["ML Model"]
         best_test_acc = summary_df.iloc[0]["Test Accuracy"]
         best_test_prec = summary_df.iloc[0]["Test Precision"]
-        st.success(f"🏆 **Best Performing Model (based on Test Accuracy & Precision):** `{best_model_name}` (Accuracy: {best_test_acc:.3f}, Precision: {best_test_prec:.3f})")
+        # --- GET BEST RECALL ---
+        best_test_recall = summary_df.iloc[0]["Test Recall"]
+        # --- UPDATE SUCCESS MESSAGE ---
+        st.success(f"🏆 **Top Model (sorted by Test Accuracy & Precision):** `{best_model_name}` (Accuracy: {best_test_acc:.3f}, Precision: {best_test_prec:.3f}, Recall: {best_test_recall:.3f})")
+        # --- UPDATE INTERPRETATION NOTES ---
         st.markdown(
              """
             **Interpretation:**
-            - **High Test Accuracy & Precision** are desired.
-            - Compare **Train vs. Test** scores: A large gap (e.g., Train Accuracy >> Test Accuracy) might indicate **overfitting**, where the model learned the training data too well but doesn't generalize to new data.
+            - **High Test Accuracy, Precision, and Recall** are generally desired.
+                - **Accuracy:** Overall correctness.
+                - **Precision:** Of the URLs predicted as phishing, how many actually were? (Minimizes false positives)
+                - **Recall:** Of all the actual phishing URLs, how many did the model find? (Minimizes false negatives - important for not missing threats!)
+            - Compare **Train vs. Test** scores: A large gap might indicate **overfitting**.
             """
         )
+        # --- END UPDATES ---
     else:
          st.warning("Summary table is empty.")
 

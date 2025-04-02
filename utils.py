@@ -5,7 +5,7 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, precision_score, confusion_matrix
+from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
@@ -102,9 +102,13 @@ def plot_feature_importance(model, feature_names, model_name):
 
 def plot_model_comparison(summary_df):
     """Generates grouped bar charts for comparing model metrics."""
+    # --- INCLUDE RECALL IN value_vars ---
     df_melt = summary_df.melt(id_vars="ML Model",
-                              value_vars=["Train Accuracy", "Test Accuracy", "Train Precision", "Test Precision"],
+                              value_vars=["Train Accuracy", "Test Accuracy",
+                                          "Train Precision", "Test Precision",
+                                          "Train Recall", "Test Recall"], # <-- Added Recall here
                               var_name="Metric", value_name="Score")
+    # --- END INCLUDE RECALL ---
 
     fig = px.bar(df_melt, x="ML Model", y="Score", color="Metric",
                  barmode="group", title="Model Performance Comparison",
@@ -120,8 +124,12 @@ def store_model_result(name, model, y_pred_train, y_pred_test, y_train, y_test):
     """Calculates metrics and stores model results."""
     acc_train = accuracy_score(y_train, y_pred_train)
     acc_test = accuracy_score(y_test, y_pred_test)
-    prec_train = precision_score(y_train, y_pred_train, zero_division=0) # Handle zero division
+    prec_train = precision_score(y_train, y_pred_train, zero_division=0)
     prec_test = precision_score(y_test, y_pred_test, zero_division=0)
+    # --- ADD RECALL CALCULATION ---
+    recall_train = recall_score(y_train, y_pred_train, zero_division=0)
+    recall_test = recall_score(y_test, y_pred_test, zero_division=0)
+    # --- END ADD RECALL ---
     cm_fig = plot_conf_matrix(y_test, y_pred_test, title=f"{name} - Test Set Confusion Matrix")
 
     return {
@@ -131,6 +139,10 @@ def store_model_result(name, model, y_pred_train, y_pred_test, y_train, y_test):
         "acc_test": acc_test,
         "prec_train": prec_train,
         "prec_test": prec_test,
+        # --- ADD RECALL TO DICTIONARY ---
+        "recall_train": recall_train,
+        "recall_test": recall_test,
+        # --- END ADD RECALL ---
         "conf_matrix_fig": cm_fig
     }
 

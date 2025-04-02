@@ -169,14 +169,21 @@ if df is not None:
         for name, res in st.session_state["model_results"].items():
             with st.expander(f"Show Results for: **{name}**", expanded=False):
                 st.write(f"**Parameters Used:** `{st.session_state['trained_model_params'].get(name, 'N/A')}`")
-                col1, col2 = st.columns(2)
+                col1, col2, col3 = st.columns(3)  # Use 3 columns for better layout
                 with col1:
                     st.metric(label="Test Accuracy", value=f"{res['acc_test']:.3f}")
-                    st.metric(label="Test Precision", value=f"{res['prec_test']:.3f}")
                     st.metric(label="Train Accuracy", value=f"{res['acc_train']:.3f}")
-                    st.metric(label="Train Precision", value=f"{res['prec_train']:.3f}")
                 with col2:
-                    st.plotly_chart(res["conf_matrix_fig"], use_container_width=True)
+                    st.metric(label="Test Precision", value=f"{res['prec_test']:.3f}")
+                    st.metric(label="Train Precision", value=f"{res['prec_train']:.3f}")
+                # --- ADD RECALL METRICS ---
+                with col3:
+                    st.metric(label="Test Recall", value=f"{res['recall_test']:.3f}")
+                    st.metric(label="Train Recall", value=f"{res['recall_train']:.3f}")
+                # --- END ADD RECALL ---
+
+                # Display confusion matrix below metrics
+                st.plotly_chart(res["conf_matrix_fig"], use_container_width=True)
 
                 # Display feature importance if available and requested
                 # Moved to Comparison page for better flow
